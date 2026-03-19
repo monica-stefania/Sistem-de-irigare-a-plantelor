@@ -1,8 +1,8 @@
 # Sistem de monitorizare și irigare a plantelor
 
 ## Studenti:
-Luca Monica-Ștefania: monica-stefania.luca@student.tuiasi.ro
-Talmaciu Theodor-Alexandru: theodor-alexandru.talmaciu@student.tuiasi.ro
+- Luca Monica-Ștefania: monica-stefania.luca@student.tuiasi.ro
+- Talmaciu Theodor-Alexandru: theodor-alexandru.talmaciu@student.tuiasi.ro
  
 ## Descriere:
 Proiectul propune dezvoltarea unui sistem embedded capabil să monitorizeze în timp real nivelul de umiditate din solul unei plante și să intervină automat pentru irigarea acesteia atunci când este necesar. Sistemul utilizează un microcontroler Raspberry Pi Pico 2W, valorificând funcționalitățile acestuia de conversie analog-digitală (ADC) asistată de acces direct la memorie (DMA), gestionare a evenimentelor asincrone prin întreruperi și comunicație prin protocolul I2C. Sistemul oferă și o interfață utilizator prin intermediul display-ului OLED pentru a putea vedea nivelul de umiditate al solului și, cu ajutorul unui buton vom putea declanșa ciclul de irigare la acționarea acestuia, iar alt buton va avea rol de "Kill Switch" în cazul în care pompa de apă se blochează sau dorim oprirea umezirii solului. 
