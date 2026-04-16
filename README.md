@@ -1,18 +1,18 @@
 # Sistem de monitorizare și irigare a plantelor
 
-## Studenti:
+## Studenți:
 - Luca Monica-Ștefania: monica-stefania.luca@student.tuiasi.ro
 - Talmaciu Theodor-Alexandru: theodor-alexandru.talmaciu@student.tuiasi.ro
  
 ## Descriere:
-Proiectul propune dezvoltarea unui sistem embedded capabil să monitorizeze în timp real nivelul de umiditate din solul unei plante și să intervină automat pentru irigarea acesteia atunci când este necesar. Sistemul utilizează un microcontroler Raspberry Pi Pico 2W, valorificând funcționalitățile acestuia de conversie analog-digitală (ADC) asistată de acces direct la memorie (DMA), gestionare a evenimentelor asincrone prin întreruperi și comunicație prin protocolul I2C. Sistemul oferă și o interfață utilizator prin intermediul display-ului OLED pentru a putea vedea nivelul de umiditate al solului și, cu ajutorul unui buton vom putea declanșa ciclul de irigare la acționarea acestuia, iar alt buton va avea rol de "Kill Switch" în cazul în care pompa de apă se blochează sau dorim oprirea umezirii solului. 
+Proiectul propune dezvoltarea unui sistem embedded capabil să monitorizeze în timp real nivelul de umiditate din solul unei plante și să intervină automat pentru irigarea acesteia atunci când este necesar. Sistemul utilizează un microcontroler Raspberry Pi Pico 2W, valorificând funcționalitățile acestuia de conversie analog-digitală (ADC) asistată de acces direct la memorie (DMA), gestionare a evenimentelor asincrone prin întreruperi și comunicație prin protocolul I2C. Sistemul oferă și o interfață utilizator prin intermediul display-ului LCD pentru a putea vedea nivelul de umiditate al solului și, cu ajutorul unui buton vom putea declanșa ciclul de irigare la acționarea acestuia, iar alt buton va avea rol de "Kill Switch" în cazul în care pompa de apă se blochează sau dorim oprirea umezirii solului. 
 
 ## Componente utilizate:
 - Raspberry Pi Pico 2W  
 - Senzor capacitiv de umiditate  
 - Modul releu  
 - Pompă submersibilă  
-- Display OLED 0.96" (I2C)  
+- Display LCD1602 (I2C)  
 - Butoane tactile
 
 ## Cerințe funcționale:
@@ -20,7 +20,7 @@ Proiectul propune dezvoltarea unui sistem embedded capabil să monitorizeze în 
 
 - Irigare automată: Sistemul trebuie să acționeze un modul releu pentru a porni o pompă de apă submersibilă atunci când umiditatea măsurată scade sub un prag prestabilit
 
-- Afișare display: Sistemul trebuie să afișeze în timp real, pe un ecran OLED 0.96" comunicând prin protocolul I2C, nivelul de umiditate și starea curentă a pompei (ON/OFF)
+- Afișare display: Sistemul trebuie să afișeze în timp real, pe un ecran LCD comunicând prin protocolul I2C, nivelul de umiditate și starea curentă a pompei (ON/OFF)
 
 - Acționare manual și siguranță: Sistemul trebuie să integreze două butoane tactile, gestionate prin întreruperi hardware cu răspuns instantaneu: un buton pentru declanșarea forțată a ciclului de irigare și un buton cu rol de oprire de urgență (Kill Switch), care să blocheze imediat funcționarea pompei indiferent de starea sistemului.
 
