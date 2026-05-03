@@ -35,7 +35,7 @@ pico_sdk_init()
 
 # Add executable. Default name is the project name, version 0.1
 
-add_executable(Sistem_de_Udare_a_Plantelor Sistem_de_Udare_a_Plantelor.c )
+add_executable(Sistem_de_Udare_a_Plantelor Sistem_de_Udare_a_Plantelor.c server/web_server.c)
 
 pico_set_program_name(Sistem_de_Udare_a_Plantelor "Sistem_de_Udare_a_Plantelor")
 pico_set_program_version(Sistem_de_Udare_a_Plantelor "0.1")
@@ -50,7 +50,7 @@ target_link_libraries(Sistem_de_Udare_a_Plantelor
 
 # Add the standard include files to the build
 target_include_directories(Sistem_de_Udare_a_Plantelor PRIVATE
-        ${CMAKE_CURRENT_LIST_DIR}
+        ${CMAKE_CURRENT_LIST_DIR} ${CMAKE_CURRENT_LIST_DIR}/server
 )
 
 # Add any user requested libraries
@@ -58,6 +58,7 @@ target_link_libraries(Sistem_de_Udare_a_Plantelor
         hardware_i2c
         hardware_dma
         hardware_adc
+        pico_cyw43_arch_lwip_threadsafe_background
         )
 
 pico_add_extra_outputs(Sistem_de_Udare_a_Plantelor)
