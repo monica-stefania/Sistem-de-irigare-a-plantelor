@@ -1,9 +1,9 @@
 #include <stdio.h>
 #include "pico/stdlib.h"
 
-#include "lcd.h"
-#include "sensor.h"
-#include "pump.h"
+#include "lcd/lcd.h"
+#include "sensor/sensor.h"
+#include "pump/pump.h"
 
 //limite critice
 #define LIMIT_DRY 25
@@ -22,6 +22,9 @@ int main() {
     char linia2[16];
     bool stare_clipire = false;
 
+    int stare_pompa = 0; // 0 - pornire pompa pt 3 sec, 1 - pauza pentru 5 sec, 2 - trecere in starea 0 dupa 5 sec
+    int cronometru = 0;
+
     while(true)
     {   
         uint16_t media_bruta;
@@ -35,7 +38,6 @@ int main() {
         if(procent <= LIMIT_DRY)
         {
             lcd_backlight(stare_clipire); 
-            pump_turn_on();
 
             if (stare_clipire) 
             {
@@ -47,6 +49,32 @@ int main() {
                 sprintf(linia1, "                "); 
                 sprintf(linia2, "                ");
             }
+
+            if(stare_pompa == 0) 
+            {
+                pump_turn_on();
+                stare_pompa = 1;
+                cronometru = 3;
+            }
+            else if(stare_pompa == 1)
+            {
+                cronometru--;
+                if(cronometru <= 0)
+                {
+                    pump_turn_off();
+                    stare_pompa = 2;
+                    cronometru = 5;
+                }
+            }
+            else if(stare_pompa == 2)
+            {
+                cronometru--;
+                if(cronometru <= 0)
+                {
+                    stare_pompa = 0;
+                }
+            }
+
         }
         else if (procent >= LIMIT_WET)
         {
@@ -67,9 +95,12 @@ int main() {
         else
         {
             lcd_backlight(true); 
+            
             // daca umiditatea e in limitele normale, oprim pompa
             pump_turn_off();
-
+            cronometru = 0;
+            stare_pompa = 0;
+            
             sprintf(linia1, "Umiditate: %d%%", procent);
             sprintf(linia2, "Brut: %d", media_bruta);
         }
