@@ -66,3 +66,39 @@ Proiectul propune dezvoltarea unui sistem embedded capabil să monitorizeze în 
 **Rezultat așteptat:**
 - Nu apar blocaje  
 - Nu se strică vreo componentă a sistemului  
+
+## Schema bloc
+![Schema bloc a sistemul de irigare](images/schema-bloc.png)
+
+## Schema electrică 
+![Schema electrica a sistemul de irigare](images/schema-electrica.png)
+## Imagini cu etapele realizării proiectului
+
+### 1. Analiza valorilor brute și calculul procentajului de umiditate
+
+Am făcut teste pentru a verifica în aer (complet uscat) și în mediul umed (apă) care sunt valorile maxime și minime permise de convertorul analog-digital (ADC) pentru senzorul capacitiv.
+
+* **Testul în aer (Mediu uscat):**
+Când senzorul nu detectează deloc apă, valoarea brută este la nivelul maxim, de aproximativ 2770.
+
+![Testare în aer](images/testare-valori-aer.jpeg)
+
+* **Testul în apă (Mediu complet umed):** La scufundarea senzorului în apă, valoarea brută scade semnificativ, la aproximativ 1100.
+
+![Testare în apă](images/testare-valori-apa.jpeg)
+
+**Modelul Matematic:**
+Pentru a transpune valorile brute în procente (0% ... 100%), am aplicat ecuația:
+
+$$Umiditate (\%) = \left( \frac{Val_{Uscat} - Val_{Citită}}{Val_{Uscat} - Val_{Apă}} \right) \times 100$$
+
+Unde $Val_{Uscat}$ este pragul maxim calibrat în aer (2770), iar $Val_{Apă}$ este pragul minim obținut la scufundarea completă a senzorului în apă (1100).
+
+*Notă: În această etapă a fost adăugat și mesajul de alertă **!!!CRITIC!!!** pe display. Acesta apare atunci când procentajul scade sub 25% (sol prea uscat) sau crește peste 85% (risc de înecare a rădăcinilor).*
+
+### 2. Testare în mediu real
+Testul a reprezentat succesul fazei de calibrare hardware. Am introdus senzorul în solul plantei pentru a verifica comportamentul sistemului.
+
+![Testare reușită în ghiveci](images/testare-planta.jpeg)
+
+**Rezultat:** Sistemul a preluat valoarea brută atenuată de sol și a calculat corect un procent intermediar stabil (ex: 40%), confirmând acuratețea calibrării.
