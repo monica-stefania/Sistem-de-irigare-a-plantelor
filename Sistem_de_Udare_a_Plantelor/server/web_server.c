@@ -6,8 +6,10 @@
 #include "pico/stdlib.h"
 
 extern int umidity_percentage; //variabila globala pentru a stoca procentul de umiditate
+extern volatile bool udare_manuala_activata;
+extern volatile bool kill_switch_activat;
 
-static const char *ssi_tags[] = {"humidity", "status", "uptime"};
+static const char *ssi_tags[] = {"humidity", "status", "uptime", "kill"};
 
 //trimitem date catre pagina web folosind Server Side Includes (SSI)
 u16_t ssi_handler(int iIndex, char *pcInsert, int iInsertLen) {
@@ -15,11 +17,26 @@ u16_t ssi_handler(int iIndex, char *pcInsert, int iInsertLen) {
         return snprintf(pcInsert, iInsertLen, "%d", umidity_percentage);
     }
     else if (iIndex == 1) { // "status" tag
-        return snprintf(pcInsert, iInsertLen, "Online");
+       if (kill_switch_activat) {
+            return snprintf(pcInsert, iInsertLen, "Kill Switch ON");
+        } else if (udare_manuala_activata) {
+            return snprintf(pcInsert, iInsertLen, "Udare Manuala Activa");
+        } else if (umidity_percentage <= 25) { // LIMIT_DRY
+            return snprintf(pcInsert, iInsertLen, "Prea Uscat (Pompa Pornita)");
+        } else if (umidity_percentage >= 85) { // LIMIT_WET
+            return snprintf(pcInsert, iInsertLen, "Prea Ud (Pompa Oprita)");
+        } else {
+            return snprintf(pcInsert, iInsertLen, "Umiditate normala");
+        }
     }
     else if (iIndex == 2) { // "uptime" tag
-        uint32_t secunde = to_ms_since_boot(get_absolute_time()) / 1000;
-        return snprintf(pcInsert, iInsertLen, "%d sec", secunde);
+        uint32_t secunde_totale = to_ms_since_boot(get_absolute_time()) / 1000;
+        uint32_t minute = secunde_totale / 60;
+        uint32_t secunde = secunde_totale % 60;
+        return snprintf(pcInsert, iInsertLen, "%d min %d sec", minute, secunde);
+    }
+    else if (iIndex == 3) { // "kill" tag
+        return snprintf(pcInsert, iInsertLen, "%d", kill_switch_activat ?  1 : 0);
     }
     return 0; // tag necunoscut
 }
@@ -29,10 +46,17 @@ const char *cgi_handler_irigate(int iIndex, int iNumParams, char *pcParam[], cha
     for(int i = 0; i < iNumParams; i++) {
         if (strcmp(pcParam[i], "state") == 0) {
             if (strcmp(pcValue[i], "1") == 0) {
-                printf("Sistem de udare pornit!\n");
+                // Dacă nu e activat butonul de avarie, permitem pornirea web
+                if (!kill_switch_activat && umidity_percentage < 85) { // LIMIT_DRY
+                    udare_manuala_activata = true;
+                    //printf("CGI: Comanda pornire primita din browser!\n");
+                } else {
+                    //printf("CGI: Comanda pornire primita, dar sistemul este in avarie (Kill Switch ON)!\n");
+                }
             }
             else if (strcmp(pcValue[i], "0") == 0) {
-                printf("Sistem de udare oprit!\n");
+                udare_manuala_activata = false;
+                printf("CGI: Comanda oprire primita din browser!\n");
             }
         }
     }
@@ -58,6 +82,6 @@ void start_web_server(const char *ssid, const char *pass) {
     printf("========================================\n\n");
 
     httpd_init();
-    http_set_ssi_handler(ssi_handler, ssi_tags, 3);
+    http_set_ssi_handler(ssi_handler, ssi_tags, 4);
     http_set_cgi_handlers(cgi_handlers, 1);
 }

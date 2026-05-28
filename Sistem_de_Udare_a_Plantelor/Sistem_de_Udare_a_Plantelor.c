@@ -7,6 +7,7 @@
 #include "lcd/lcd.h"
 #include "sensor/sensor.h"
 #include "pump/pump.h"
+#include "web_server.h"
 
 //setare pini pt i2c
 #define I2C_SDA_PIN 0 //GP0
@@ -127,6 +128,7 @@ int main() {
             stare_clipire = !stare_clipire; // Schimbăm starea pentru efectul de "Blink"
             sensor_read(&media_bruta, &procent); 
             umidity_percentage = procent;
+            lcd_clear();
         }
 
         //in starea de kill switch, functionalitatile pompei sunt oprite
