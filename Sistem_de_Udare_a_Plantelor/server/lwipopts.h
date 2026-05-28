@@ -29,3 +29,4 @@
 #define LWIP_HTTPD_CGI              1  // Activeaza CGI-ul (butoanele)
 #define LWIP_HTTPD_SSI_INCLUDE_TAG  0  // Setare curatare HTML
 
+#define HTTPD_FSDATA_FILE "htmldata.c"

@@ -1,22 +1,27 @@
 #include <stdio.h>
 #include "pico/stdlib.h"
-
 #include "lcd/lcd.h"
 #include "sensor/sensor.h"
 #include "pump/pump.h"
-
+#include "web_server.h"
 //limite critice
 #define LIMIT_DRY 25
 #define LIMIT_WET 85
+
+int umidity_percentage = 0;
+int pompa_activata = 0;
 
 
 int main() {
     // initializare comunicare prin cablu
     stdio_init_all();
 
+    sleep_ms(2000); // asteptam 2 secunde pentru a ne asigura ca totul e gata
     lcd_init();
     sensor_init();
     pump_init();
+
+    start_web_server("Pico_Irigare", "parola1234");
 
     char linia1[16];
     char linia2[16];
@@ -32,6 +37,7 @@ int main() {
 
         //cerem datele de la senzor
         sensor_read(&media_bruta, &procent);
+        umidity_percentage = procent;
 
         stare_clipire = !stare_clipire;
 
