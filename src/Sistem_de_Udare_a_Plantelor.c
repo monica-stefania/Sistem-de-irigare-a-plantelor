@@ -28,6 +28,7 @@ volatile bool kill_switch_activat = false;
 volatile bool udare_manuala_activata = false;
 volatile uint32_t ultima_apasare_buton = 0;
 int umidity_percentage = 0;
+bool eroare_senzor = false;
 
 enum pompa {
     POMPA_OPRITA,
@@ -40,7 +41,8 @@ enum sistem {
     STARE_PREA_USCAT,
     STARE_PREA_UD,
     STARE_UDARE_MANUALA,
-    STARE_KILL_SWITCH
+    STARE_KILL_SWITCH,
+    STARE_EROARE_SENZOR
 };
 
 
@@ -75,7 +77,7 @@ int main() {
     stdio_init_all();
   
     //initializare i2c
-    i2c_init(i2c0, 400 * 1000);
+    i2c_init(i2c0, 100 * 1000);
     gpio_set_function(I2C_SDA_PIN, GPIO_FUNC_I2C);
     gpio_set_function(I2C_SCL_PIN, GPIO_FUNC_I2C);
     gpio_pull_up(I2C_SDA_PIN);
@@ -127,7 +129,15 @@ int main() {
             timer_display = timp_curent;
             stare_clipire = !stare_clipire; // Schimbăm starea pentru efectul de "Blink"
             sensor_read(&media_bruta, &procent); 
-            umidity_percentage = procent;
+
+            if (media_bruta < 800 || media_bruta > 3000) {
+                eroare_senzor = true;
+                umidity_percentage = 0; 
+            } else {
+                eroare_senzor = false;
+                umidity_percentage = procent;
+            }
+            
             lcd_clear();
         }
 
@@ -135,6 +145,10 @@ int main() {
         if(kill_switch_activat) {
             stare_sistem = STARE_KILL_SWITCH;
             udare_manuala_activata = false;
+        }
+        else if (eroare_senzor) { 
+            stare_sistem = STARE_EROARE_SENZOR;
+            udare_manuala_activata = false; 
         }
         else {
             if(udare_manuala_activata) {
@@ -218,6 +232,19 @@ int main() {
                              stare_pompa = POMPA_OPRITA;
                         }
                         break;
+                }
+                break;
+            case STARE_EROARE_SENZOR:
+                pump_turn_off(); 
+                stare_pompa = POMPA_OPRITA;
+                lcd_backlight(stare_clipire); 
+                
+                if (stare_clipire) {
+                    sprintf(linia1, "!!EROARE SENZOR!!");
+                    sprintf(linia2, "VERIFICA FIRELE");
+                } else {
+                    sprintf(linia1, "                "); 
+                    sprintf(linia2, "                ");
                 }
                 break;
         }
