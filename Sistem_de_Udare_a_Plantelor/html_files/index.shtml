@@ -2,6 +2,7 @@
 <html lang="en">
     <head>
         <meta charset="UTF-8">
+        <meta http-equiv="refresh" content="1"> <!-- Reîncarcă pagina la fiecare 1 secunde -->
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>Sistem de Udare a Plantelor</title>
 
@@ -67,7 +68,14 @@
         .btn-stop:hover { 
             background-color: #b32a22;
         }
+        .btn-disabled {
+            background-color: #7f8c8d !important;
+            color: #bdc3c7 !important;
+            cursor: not-allowed;
+            pointer-events: none;
+        }
     </style>
+
     </head>
     <body>
         <div class="container">
@@ -83,8 +91,31 @@
             <span style="font-size: 14px; color: #808e9b;">Activ de: <!--#uptime--> </span>
         </div>
 
-        <a href="/irigate?state=1" class="btn-start">PORNEȘTE UDAREA</a>
-        <a href="/irigate?state=0" class="btn-stop">OPREȘTE UDAREA</a>
+        <a href="/irigate?state=1" class="btn-start" id="btn-start">PORNEȘTE UDAREA</a>
+        <a href="/irigate?state=0" class="btn-stop" id="btn-stop">OPREȘTE UDAREA</a>
     </div>
+
+    <script>
+        const umiditate = parseInt("<!--#humidity-->");
+        const killSwitchActiv = parseInt("<!--#kill-->");
+        const btnStart = document.getElementById('btn-start');
+        const btnStop = document.getElementById('btn-stop');
+
+        if (killSwitchActiv == 1) {
+            // Blocăm complet ambele butoane din pagină
+            btnStart.classList.add('btn-disabled');
+            btnStart.innerText = 'SISTEM BLOCAT';
+            
+            btnStop.classList.add('btn-disabled');
+            btnStop.innerText = 'SISTEM BLOCAT';
+        } 
+        else if (umiditate >= 85) {
+            btnStart.classList.add('btn-disabled');
+            btnStart.innerText = 'PORNIRE BLOCATĂ';
+            btnStop.classList.add('btn-disabled');
+            btnStop.innerText = 'OPRIRE BLOCATĂ';
+        }
+    </script>
+
     </body>
 </html>
