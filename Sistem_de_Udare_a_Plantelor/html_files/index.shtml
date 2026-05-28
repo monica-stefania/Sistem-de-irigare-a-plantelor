@@ -75,12 +75,12 @@
         
         <div class="data-box">
             Umiditate sol: <br>
-            <span class="highlight">%</span>
+            <span class="highlight"><!--#humidity-->%</span>
         </div>
 
         <div class="data-box">
-            Status: <strong></strong><br>
-            <span style="font-size: 14px; color: #808e9b;">Activ de: </span>
+            Status: <strong><!--#status--></strong><br>
+            <span style="font-size: 14px; color: #808e9b;">Activ de: <!--#uptime--> </span>
         </div>
 
         <a href="/irigate?state=1" class="btn-start">PORNEȘTE UDAREA</a>

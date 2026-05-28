@@ -1,19 +1,18 @@
 #include "web_server.h"
 #include "lwip/apps/httpd.h"
-
 #include <string.h>
 #include <stdio.h>
 #include <stdint.h>
 #include "pico/stdlib.h"
 
-float umidity_percentage = 0.0; //variabila globala pentru a stoca procentul de umiditate
+extern int umidity_percentage; //variabila globala pentru a stoca procentul de umiditate
 
 static const char *ssi_tags[] = {"humidity", "status", "uptime"};
 
 //trimitem date catre pagina web folosind Server Side Includes (SSI)
 u16_t ssi_handler(int iIndex, char *pcInsert, int iInsertLen) {
     if (iIndex == 0) { // "humidity" tag
-        return snprintf(pcInsert, iInsertLen, "%.2f", umidity_percentage);
+        return snprintf(pcInsert, iInsertLen, "%d", umidity_percentage);
     }
     else if (iIndex == 1) { // "status" tag
         return snprintf(pcInsert, iInsertLen, "Online");
@@ -51,6 +50,12 @@ void start_web_server(const char *ssid, const char *pass) {
     }
 
     cyw43_arch_enable_ap_mode(ssid, pass, CYW43_AUTH_WPA2_AES_PSK);
+    printf("\n========================================\n");
+    printf("RETEA CREATA CU SUCCES!\n");
+    printf("1. Conecteaza laptopul la reteaua Wi-Fi: %s\n", ssid);
+    printf("2. Seteaza IP static pe laptop (ex: 192.168.4.2)\n");
+    printf("3. Intra in browser pe: http://192.168.4.1\n");
+    printf("========================================\n\n");
 
     httpd_init();
     http_set_ssi_handler(ssi_handler, ssi_tags, 3);

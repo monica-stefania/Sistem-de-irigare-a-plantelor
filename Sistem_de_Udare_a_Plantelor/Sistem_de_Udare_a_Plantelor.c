@@ -26,6 +26,7 @@
 volatile bool kill_switch_activat = false;
 volatile bool udare_manuala_activata = false;
 volatile uint32_t ultima_apasare_buton = 0;
+int umidity_percentage = 0;
 
 enum pompa {
     POMPA_OPRITA,
@@ -71,7 +72,7 @@ void btn_callback(uint gpio, uint32_t events){
 int main() {
     // initializare comunicare prin cablu
     stdio_init_all();
-
+  
     //initializare i2c
     i2c_init(i2c0, 400 * 1000);
     gpio_set_function(I2C_SDA_PIN, GPIO_FUNC_I2C);
@@ -86,7 +87,6 @@ int main() {
     lcd_init(i2c0);
     sensor_init(SOIL_SENSOR_PIN, ADC_NUM);
     pump_init();
-
     
     //initializare butoane
     gpio_init(PIN_BTN_KILL_SWITCH);
@@ -97,11 +97,12 @@ int main() {
     gpio_set_dir(PIN_BTN_UDARE_MANUALA, GPIO_IN);
     gpio_pull_up(PIN_BTN_UDARE_MANUALA);
 
-
-
     gpio_set_irq_enabled_with_callback(PIN_BTN_KILL_SWITCH, GPIO_IRQ_EDGE_FALL, true, &btn_callback);
     gpio_set_irq_enabled(PIN_BTN_UDARE_MANUALA, GPIO_IRQ_EDGE_FALL, true);
 
+    sleep_ms(2000); // asteptam 2 secunde pentru a ne asigura ca totul e gat
+
+    start_web_server("Pico_Irigare", "parola1234");
     
     char linia1[17] = "                ";
     char linia2[17] = "                ";
@@ -125,6 +126,7 @@ int main() {
             timer_display = timp_curent;
             stare_clipire = !stare_clipire; // Schimbăm starea pentru efectul de "Blink"
             sensor_read(&media_bruta, &procent); 
+            umidity_percentage = procent;
         }
 
         //in starea de kill switch, functionalitatile pompei sunt oprite

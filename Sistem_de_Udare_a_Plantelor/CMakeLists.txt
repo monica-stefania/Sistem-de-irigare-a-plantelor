@@ -59,6 +59,7 @@ target_link_libraries(Sistem_de_Udare_a_Plantelor
         hardware_dma
         hardware_adc
         pico_cyw43_arch_lwip_threadsafe_background
+        pico_lwip_http
         )
 
 pico_add_extra_outputs(Sistem_de_Udare_a_Plantelor)
