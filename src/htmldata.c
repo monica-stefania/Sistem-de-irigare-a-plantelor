@@ -1,12 +1,5 @@
 #include "lwip/apps/fs.h"
 
-struct fsdata_file {
-	const struct fsdata_file *next;
-	const unsigned char *name;
-	const unsigned char *data;
-	int len;
-	unsigned char flags;
-};
 
 static const unsigned char data_index_shtml[] = {
 	/* .\index.shtml */
