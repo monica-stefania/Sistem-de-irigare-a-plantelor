@@ -143,7 +143,7 @@ MT/
 ```
 ### Schema logică
 
-![Schema logica a sistemului de irigare](docs/images/schema-logica.png)
+![Schema logica a sistemului de irigare](docs/images/schema-logica.jpg)
 ### Mașina de stări
 
 Logica principală este implementată ca o mașină de stări cu **5 stări de sistem** și **3 stări ale pompei**:
