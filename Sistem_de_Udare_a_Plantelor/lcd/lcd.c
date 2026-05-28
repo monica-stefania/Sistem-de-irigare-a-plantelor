@@ -1,11 +1,7 @@
 //fisier cu functii pt display
 
 #include "lcd.h"
-#include "hardware/i2c.h"
 
-//setare pini pt i2c
-#define I2C_SDA_PIN 0 //GP0
-#define I2C_SCL_PIN 1 //GP1
 
 // Adresa I2C a ecranului 
 const int LCD_ADDR = 0x27; 
@@ -20,10 +16,10 @@ const int LCD_DISPLAY_CONTROL = 0x08;
 const int LCD_DISPLAY_ON = 0x04;
 
 bool lcd_on = true; //variabila globala pentru aprindere si stingere display-ului atunci cand valorile sunt critice
-
+static i2c_inst_t *lcd_i2c;
 
 void i2c_write_byte(uint8_t val) {
-    i2c_write_blocking(i2c0, LCD_ADDR, &val, 1, false);
+    i2c_write_blocking(lcd_i2c, LCD_ADDR, &val, 1, false);
 }
 
 void lcd_toggle_enable(uint8_t val) {
@@ -68,12 +64,8 @@ void lcd_string(const char *s) {
     }
 }
 
-void lcd_init() {
-    i2c_init(i2c0, 400 * 1000);
-    gpio_set_function(I2C_SDA_PIN, GPIO_FUNC_I2C);
-    gpio_set_function(I2C_SCL_PIN, GPIO_FUNC_I2C);
-    gpio_pull_up(I2C_SDA_PIN);
-    gpio_pull_up(I2C_SCL_PIN);
+void lcd_init(i2c_inst_t *i2c) {
+    lcd_i2c = i2c;
 
     sleep_ms(50); // asteptam pornirea ecranului
     lcd_send_byte(0x03, 0);
