@@ -1,5 +1,4 @@
 #include "sensor.h"
-#include "hardware/adc.h"
 #include "hardware/dma.h"
 
 //setare pini pentru senzor umiditate
@@ -28,13 +27,10 @@ int humidity_percentage(uint16_t val)
     return precentage;
 }
 
-void sensor_init()
+void sensor_init(uint8_t gpio_pin, uint8_t adc_channel)
 {
-    //initiliazare adc
-    adc_init();
     adc_gpio_init(SOIL_SENSOR_PIN);
     adc_select_input(ADC_NUM);
-    adc_set_clkdiv(48000);
 
     //luam un canal DMA liber
     dma_chan = dma_claim_unused_channel(true);
