@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta http-equiv="refresh" content="1"> <!-- Reîncarcă pagina la fiecare 1 secunde -->
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Sistem de Udare a Plantelor</title>
+
+        <style>
+        body {
+            font-family: 'Segoe UI', Verdana, sans-serif, sans-serif;
+            background-color: #1e272e;
+            color: white;
+            text-align: center;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .container {
+            background-color: #485460;
+            max-width: 400px;
+            margin: 40px auto;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0px 8px 15px rgba(0, 0, 0, 0.5);
+        }
+
+        h1 { 
+            color: #0fbcf9; 
+            font-size: 24px; 
+        }
+
+        .data-box {
+            background-color: #1e272e;
+            margin: 15px 0;
+            padding: 15px;
+            border-radius: 10px;
+            font-size: 20px;
+        }
+        .highlight { 
+            color: #0be881; 
+            font-weight: bold; 
+            font-size: 28px; 
+        }
+        
+        /* Design pentru butoane */
+        a{
+            display: inline-block;
+            width: 80%;
+            padding: 15px;
+            margin: 10px 0;
+            font-size: 18px;
+            font-weight: bold;
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            transition: 0.3s;
+        }
+        .btn-start { 
+            background-color: #05c46b; 
+        }
+        .btn-start:hover { 
+            background-color: #048f4e;
+        }
+        .btn-stop {
+             background-color: #ff3f34; 
+        }
+        .btn-stop:hover { 
+            background-color: #b32a22;
+        }
+        .btn-disabled {
+            background-color: #7f8c8d !important;
+            color: #bdc3c7 !important;
+            cursor: not-allowed;
+            pointer-events: none;
+        }
+    </style>
+
+    </head>
+    <body>
+        <div class="container">
+        <h1>Smart Garden Dashboard</h1>
+        
+        <div class="data-box">
+            Umiditate sol: <br>
+            <span class="highlight"><!--#humidity-->%</span>
+        </div>
+
+        <div class="data-box">
+            Status: <strong><!--#status--></strong><br>
+            <span style="font-size: 14px; color: #808e9b;">Activ de: <!--#uptime--> </span>
+        </div>
+
+        <a href="/irigate?state=1" class="btn-start" id="btn-start">PORNEȘTE UDAREA</a>
+        <a href="/irigate?state=0" class="btn-stop" id="btn-stop">OPREȘTE UDAREA</a>
+    </div>
+
+    <script>
+        const umiditate = parseInt("<!--#humidity-->");
+        const killSwitchActiv = parseInt("<!--#kill-->");
+        const btnStart = document.getElementById('btn-start');
+        const btnStop = document.getElementById('btn-stop');
+
+        if (killSwitchActiv == 1) {
+            // Blocăm complet ambele butoane din pagină
+            btnStart.classList.add('btn-disabled');
+            btnStart.innerText = 'SISTEM BLOCAT';
+            
+            btnStop.classList.add('btn-disabled');
+            btnStop.innerText = 'SISTEM BLOCAT';
+        } 
+        else if (umiditate >= 85) {
+            btnStart.classList.add('btn-disabled');
+            btnStart.innerText = 'PORNIRE BLOCATĂ';
+            btnStop.classList.add('btn-disabled');
+            btnStop.innerText = 'OPRIRE BLOCATĂ';
+        }
+    </script>
+
+    </body>
+</html>
